@@ -1,0 +1,78 @@
+### AI Landing Zone - Components
+---
+Private endpoints and private link config
+https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns
+
+### Azure Search configurations
+
+El atributo **enforcement** del bloque **encryptionWithCmk** de la configuración de un servicio Azure Search describe cómo debe gestionar el servicio de búsqueda los objetos que no están cifrados con una clave gestionada por el cliente (CMK). A continuación se indican los valores posibles y sus significados:
+
+- "Disable (Desactivado)": El servicio de búsqueda no impone el cifrado con la clave gestionada por el cliente. Los objetos que no están cifrados con la CMK se permiten sin ninguna restricción.
+- "Enable Activado": El servicio de búsqueda impone el cifrado con la clave gestionada por el cliente. Los objetos que no están cifrados con la CMK se marcan y se aplican medidas de cumplimiento.
+- "Unespecified (No especificado)": No se especifica explícitamente el comportamiento del servicio de búsqueda respecto a la aplicación del cifrado. Se aplica el comportamiento por defecto del servicio, que puede o no aplicar el cifrado con la CMK.
+
+"Disabled":
+
+Use Case: This might be used in a development or testing environment where encryption policies are not strictly enforced.
+
+"Enabled":
+
+Use Case: This is suitable for production environments where strict compliance with encryption policies is required. It ensures that all data is encrypted with the customer-managed key.
+
+With this setting, if any object is found that is not encrypted with the CMK, the service will take action to enforce compliance. This might include flagging the object, logging an error, or preventing access to the object until it is compliant
+
+"Unspecified":
+
+Use Case: This might be used when you want the service to use its default behavior for encryption enforcement, which might vary based on the service and region.
+
+
+
+The aadAuthFailureMode attribute in the authOptions block of an Azure Search service configuration describes how the search service should respond to authentication failures. Here are the possible values and their meanings:
+
+aadAuthFailureMode Attribute
+"http401WithBearerChallenge": The search service responds with an HTTP 401 status code along with a Bearer challenge. This means the client is unauthorized but can attempt to authenticate using the provided challenge.
+"http403": The search service responds with an HTTP 403 status code, indicating that access is forbidden. The client is not authorized to access the resource, and no challenge is provided.
+
+
+"http401WithBearerChallenge":
+
+Use Case: This is suitable for environments where clients need to authenticate against Azure Active Directory (AAD). The Bearer challenge helps clients understand they need to authenticate and provides the mechanism to do so.
+
+"http403":
+
+Use Case: This is suitable for environments where strict access control is enforced, and failed authentication attempts should be met with a clear "forbidden" response without providing any further authentication challenge.
+
+"http401WithBearerChallenge": Use in development and testing environments for a more user-friendly experience.
+"http403": Use in production environments for stricter access control and enhanced security.
+
+
+---
+
+hostingMode Attribute
+The hostingMode attribute in Azure Search service configuration specifies how the service should be hosted. This is particularly relevant for the standard3 SKU, which offers an option to enable high-density partitions.
+
+Values:
+"default": This is the standard hosting mode, applicable for all SKUs.
+"highDensity": This mode is only applicable to the standard3 SKU. It enables up to 3 high-density partitions, allowing up to 1000 indexes, which is significantly higher than the maximum indexes allowed for any other SKU.
+
+
+----
+
+'dataPlaneAuthOptions' están definidas. bool
+ChatGPT
+El atributo disableLocalAuth es una configuración de seguridad para el servicio Azure Search que determina si se pueden utilizar claves de API para la autenticación. Cuando se establece en true, no se pueden utilizar claves de API, lo que mejora la seguridad al imponer el uso de Azure Active Directory (AAD) para la autenticación.
+
+When disableLocalAuth is set to true, API keys cannot be used to authenticate requests to the search service. This setting enforces stricter security by ensuring that only Azure Active Directory (AAD) authentication is used.
+If disableLocalAuth is set to false, both API keys and AAD authentication can be used.
+
+disabledDataExfiltrationOptions	A list of data exfiltration scenarios that are explicitly disallowed for the search service. Currently, the only supported value is 'All' to disable all possible data export scenarios with more fine grained controls planned for the future.	String array containing any of:
+"All"
+disableLocalAuth	When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'dataPlaneAuthOptions' are defined.	bool
+
+
+---
+
+
+### Api management Azapi
+
+https://learn.microsoft.com/en-us/azure/templates/microsoft.apimanagement/2023-09-01-preview/service/apis?pivots=deployment-language-terraform
